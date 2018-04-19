@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace VendingMachine.Products {
     public interface IProduct {
-        void Consume();
+        int Price { get; }
+        string Info { get; }
+        void Use();
+        bool Purchase(int money);
+        void Examine();
     }
 }

@@ -5,26 +5,76 @@ using VendingMachine.Products;
 namespace VendingMachine {
     internal class VendingMachine {
         private readonly int[] denominations = new int[] { 1, 5, 10, 20, 50, 100, 500, 1000 };
-        private Dictionary<IProduct, int> aviableProducts;
+        private List<IProduct> aviableProducts;
+        private ConsoleKeyInfo keyInfo;
         private ConsoleKey key;
 
         public int CurrentDepositedMoney { get; set; }
 
         public VendingMachine() {
-            aviableProducts = new Dictionary<IProduct, int> {
-                { new Soda(), 25 },
-                { new Chips(), 30 },
-                { new Candybar(), 20 }
+            aviableProducts = new List<IProduct> {
+                new Soda() { Price = 15, Info = "Sparkly soda!" },
+                new Chips() { Price = 25, Info = "Crispy chips!" },
+                new Candybar() { Price = 35, Info = "Awesome candy!" }
             };
         }
 
-        internal void BuyItems() {
+        internal void BuyItems(List<IProduct> purchasedProducts) {
+            int options = aviableProducts.Count;
+            bool exit = false;
+            Console.WriteLine(options);
+
             do {
-                key = Console.ReadKey(true).Key;
-                if (key != ConsoleKey.Enter) {
+                keyInfo = Console.ReadKey(true);
+
+                if (Char.IsDigit(keyInfo.KeyChar)) {
+                    int choice = Int32.Parse(keyInfo.KeyChar.ToString());
+
+                    if(choice > options || choice < 1) {
+                        continue;
+                    } else {
+                        IProduct newProduct = null;
+                        if(aviableProducts[choice - 1] is Soda) {
+                            newProduct = new Soda() { Price = aviableProducts[choice - 1].Price };
+                        }
+                        if (aviableProducts[choice - 1] is Chips) {
+                            newProduct = new Chips() { Price = aviableProducts[choice - 1].Price };
+                        }
+                        if (aviableProducts[choice - 1] is Candybar) {
+                            newProduct = new Candybar() { Price = aviableProducts[choice - 1].Price };
+                        }
+
+                        if (newProduct.Purchase(CurrentDepositedMoney)) {
+                            purchasedProducts.Add(newProduct);
+                            CurrentDepositedMoney -= newProduct.Price;
+                        } else {
+                            Console.WriteLine("You have not deposited enough money to buy that item");
+                            continue;
+                        }
+
+                        ConsoleKey response;
+                        do {
+                            Console.WriteLine($"You bought some {newProduct.GetType().Name}");
+                            Console.Write("Do you wish to use this product now? (y/n)");
+                            response = Console.ReadKey(false).Key;
+                            if (response != ConsoleKey.Enter) {
+                                Console.WriteLine();
+                            }
+                        } while (response != ConsoleKey.Y && response != ConsoleKey.N);
+
+                        if(response == ConsoleKey.Y) {
+                            newProduct.Use();
+                            purchasedProducts.Remove(newProduct);
+                        }
+                        break;
+                    }
+                }
+
+                if (keyInfo.Key != ConsoleKey.Enter) {
                     Console.WriteLine();
                 }
-            } while (key != ConsoleKey.X);
+                exit = keyInfo.Key == ConsoleKey.X;
+            } while (!exit);
         }
 
         internal void DepositMoney() {
@@ -92,11 +142,15 @@ namespace VendingMachine {
             } while (key != ConsoleKey.X);
         }
 
+        internal void GetChange() {
+            throw new NotImplementedException();
+        }
+
         internal void ShowAviableProducts() {
             Console.WriteLine("### Aviable Items: ###");
             int option = 1;
-            foreach (KeyValuePair<IProduct, int> item in aviableProducts) {
-                Console.WriteLine($"[{option}] {item.Key.GetType().Name,-10} Price: {item.Value:C0}");
+            foreach (IProduct item in aviableProducts) {
+                Console.WriteLine($"[{option}] {item.GetType().Name.ToLower(),-10}");
                 option++;
             }
         }

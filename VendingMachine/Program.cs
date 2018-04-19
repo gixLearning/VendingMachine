@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+using System.Collections.Generic;
+using VendingMachine.Products;
 
 namespace VendingMachine {
 
@@ -12,6 +14,8 @@ namespace VendingMachine {
             DisplayVendingMachineTitle();
 
             VendingMachine vendingMachine = new VendingMachine();
+            List<IProduct> purchasedProducts = new List<IProduct>();
+
             bool exitMachine = false;
             showMenu = true;
 
@@ -37,7 +41,8 @@ namespace VendingMachine {
                         vendingMachine.ShowAviableProducts();
                         Console.WriteLine($"\nDeposited money: {vendingMachine.CurrentDepositedMoney:C0}\n");
                         Console.WriteLine("Please select what to buy: ");
-                        vendingMachine.BuyItems();
+                        vendingMachine.BuyItems(purchasedProducts);
+                        showMenu = true;
                         break;
                     }
                     case ConsoleKey.D: {
@@ -47,6 +52,11 @@ namespace VendingMachine {
                         showMenu = true;
                         break;
                     }
+                    //case ConsoleKey.U: {
+                    //    UseItem(purchasedProducts);
+                    //    showMenu = true;
+                    //    break;
+                    //}
                     case ConsoleKey.X: {
                         exitMachine = true;
                         break;
@@ -55,8 +65,25 @@ namespace VendingMachine {
             } while (!exitMachine);
 
             Console.WriteLine("Exited machine");
+
+            vendingMachine.GetChange();
+
             Console.Read();
         }
+
+        //private static void UseItem(List<IProduct> products) {
+        //    if(products.Count == 0) {
+        //        Console.WriteLine("You haven't purchased any items yet.");
+        //        Console.ReadKey();
+        //    } else {
+        //        Console.WriteLine("### Purchased items: ###");
+        //        int option = 1;
+        //        foreach (IProduct item in products) {
+        //            Console.WriteLine($"[{option}] {item.GetType().Name.ToLower(),-10}");
+        //            option++;
+        //        }
+        //    }
+        //}
 
         private static void DisplayVendingMachineTitle() {
             Console.ForegroundColor = ConsoleColor.Yellow;
