@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
+using System.Text;
 using VendingMachine.Products;
 
 namespace VendingMachine {
@@ -52,11 +52,11 @@ namespace VendingMachine {
                         showMenu = true;
                         break;
                     }
-                    //case ConsoleKey.U: {
-                    //    UseItem(purchasedProducts);
-                    //    showMenu = true;
-                    //    break;
-                    //}
+                    case ConsoleKey.E: {
+                        vendingMachine.ExamineItems();
+                        showMenu = true;
+                        break;
+                    }
                     case ConsoleKey.X: {
                         exitMachine = true;
                         break;
@@ -71,20 +71,6 @@ namespace VendingMachine {
             Console.Read();
         }
 
-        //private static void UseItem(List<IProduct> products) {
-        //    if(products.Count == 0) {
-        //        Console.WriteLine("You haven't purchased any items yet.");
-        //        Console.ReadKey();
-        //    } else {
-        //        Console.WriteLine("### Purchased items: ###");
-        //        int option = 1;
-        //        foreach (IProduct item in products) {
-        //            Console.WriteLine($"[{option}] {item.GetType().Name.ToLower(),-10}");
-        //            option++;
-        //        }
-        //    }
-        //}
-
         private static void DisplayVendingMachineTitle() {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("╔═════════════════════════════╗");
@@ -94,7 +80,7 @@ namespace VendingMachine {
         }
 
         private static void DisplayVendingOptions() {
-            Console.WriteLine("\n[S] Show items [B] Buy items [D] Deposit money [X] Exit\n");
+            Console.WriteLine("\n[S] Show items [B] Buy items [E] Examine items [D] Deposit money [X] Exit\n");
         }
     }
 }

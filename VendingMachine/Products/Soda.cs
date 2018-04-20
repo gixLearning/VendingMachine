@@ -14,7 +14,7 @@ namespace VendingMachine.Products {
         }
 
         public void Examine() {
-            throw new NotImplementedException();
+            Console.WriteLine($"{GetType().Name}: {Info} Price of item: {Price}");
         }
 
         public bool Purchase(int money) {
